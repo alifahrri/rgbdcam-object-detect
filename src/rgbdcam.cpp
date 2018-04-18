@@ -30,6 +30,7 @@ void RGBDCam::readMat(cv::Mat &color, cv::Mat &depth)
 	depth_stream.readFrame(&depth_frame);
 	color= cv::Mat(cv::Size(640,480),CV_8UC3,(void*)color_frame.getData());
 	depth = cv::Mat(cv::Size(640,480), CV_16UC1, (void*)depth_frame.getData());
+	depth.convertTo(depth,CV_8U,255./depth_stream.getMaxPixelValue());
 	cv::cvtColor(color, color, CV_RGB2BGR);
 }
 
