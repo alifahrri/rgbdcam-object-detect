@@ -13,7 +13,6 @@ build/CMakeFiles/3.5.1/CompilerIdC/CMakeCCompilerId.c
 build/CMakeFiles/3.5.1/CompilerIdC/a.out
 build/CMakeFiles/3.5.1/CompilerIdCXX/CMakeCXXCompilerId.cpp
 build/CMakeFiles/3.5.1/CompilerIdCXX/a.out
-build/*.*
 build/CMakeFiles/Makefile2
 build/Makefile
 build/object-detect
@@ -32,3 +31,5 @@ build/CMakeFiles/object-detect.dir/link.txt
 build/CMakeFiles/object-detect.dir/progress.make
 build/CMakeFiles/object-detect.dir/src/main.cpp.o
 build/CMakeFiles/object-detect.dir/src/rgbdcam.cpp.o
+build/*
+darknet/*
