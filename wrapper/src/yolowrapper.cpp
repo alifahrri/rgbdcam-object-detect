@@ -183,11 +183,14 @@ void Darknet::detect(cv::Mat *mat)
 
 	do_nms_obj(boxes, this->probs, l.w*l.h*l.n, l.classes, nms);
 	std::cout << "drawing.. ";
-	// printf("\033[2J");
-    // printf("\033[1;1H");
+	printf("\033[2J");
+    printf("\033[1;1H");
     // printf("\nFPS:%.1f\n",fps);
-    // printf("Objects:\n\n");
+    printf("Objects:\n\n");
 	auto display = buff[buff_index];
 	draw_detections(display, demo_detections, this->demo_thresh, boxes, this->probs, 0, demo_names, this->demo_alphabet, this->demo_classes);
 	std::cout << "done" << std::endl;
+	free_image(boxed);
+	free_image(im);
+	free_image(display);
 }
