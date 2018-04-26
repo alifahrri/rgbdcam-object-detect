@@ -53,7 +53,7 @@
 #define DEFAULT_FPS 						30
 #define DEFAULT_WIDTH 					0
 #define DEFAULT_HEIGHT 					0
-#define DEFAULT_THRESH 				 0.1
+#define DEFAULT_THRESH 				 0.3
 #define DEFAULT_HIER 					  0.5
 #define DEFAULT_CLASS 					20
 
@@ -190,6 +190,20 @@ void Darknet::detect(cv::Mat *mat)
 	auto display = buff[buff_index];
 	draw_detections(display, demo_detections, this->demo_thresh, boxes, this->probs, 0, demo_names, this->demo_alphabet, this->demo_classes);
 	std::cout << "done" << std::endl;
+
+	if(!ipl_display)
+		ipl_display = cvCreateImage(cvSize(mat->cols,mat->rows), IPL_DEPTH_8U, mat->channels());
+	// if(display.c == 3)
+	// 	rgbgr_image(display);
+
+	auto step = ipl_display->widthStep;
+	for(auto y = 0; y<display.h; ++y)
+		for(auto x = 0; x<display.w; ++x)
+			for(auto k = 0; k<display.c; ++k)
+			{
+				ipl_display->imageData[y*step + x*display.c + k] = (unsigned char)(get_pixel(display, x, y, k)*255);
+			}
+
 	free_image(boxed);
 	free_image(im);
 	free_image(display);

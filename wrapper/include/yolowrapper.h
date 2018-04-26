@@ -37,6 +37,7 @@ private :
 public :
 	cv::Mat m;
 	IplImage *ipl = 0;
+	IplImage *ipl_display = 0;
 
 private :
 	char **demo_names;

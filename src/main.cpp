@@ -37,8 +37,10 @@ int main(int argc, char **argv)
 		rgbdcam.readMat(color, depth);
 		mutex.unlock();
 		// ipl = color;
-		if(darknet.ipl)
-			cvShowImage("ipl", darknet.ipl);
+		// if(darknet.ipl)
+		// 	cvShowImage("ipl", darknet.ipl);
+		if(darknet.ipl_display)
+			cvShowImage("result", darknet.ipl_display);
 		cv::imshow("color", color);
 		cv::imshow("depth", depth);
 		// darknet.detect(&color);
