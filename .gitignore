@@ -32,4 +32,5 @@ build/CMakeFiles/object-detect.dir/progress.make
 build/CMakeFiles/object-detect.dir/src/main.cpp.o
 build/CMakeFiles/object-detect.dir/src/rgbdcam.cpp.o
 build/*
+build*/*
 darknet/*
