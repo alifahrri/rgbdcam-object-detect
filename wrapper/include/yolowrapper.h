@@ -36,6 +36,7 @@ public :
 		float rgb[3];
 	};
 	typedef std::vector<BBox> BBoxes;
+	
 public :
 	Darknet();
 	void detect(IplImage *ipl);
