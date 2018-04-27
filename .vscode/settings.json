@@ -1,6 +1,7 @@
 {
 	"files.associations": {
 		"region_layer.h": "c",
-		"maxpool_layer.c": "cpp"
+		"maxpool_layer.c": "cpp",
+		"mutex": "cpp"
 	}
 }

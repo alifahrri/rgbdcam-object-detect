@@ -13,8 +13,6 @@ int main(int argc, char **argv)
 	cv::namedWindow("depth", CV_WINDOW_NORMAL);
 	Darknet darknet;
 	cv::Mat color, depth;
-	// cv::Mat img;
-	// cv::Mat detections;
 
 	std::thread darknet_thread([&]
 	{
@@ -32,7 +30,6 @@ int main(int argc, char **argv)
 		}
 	});
 
-	// IplImage ipl;
 	while(running)
 	{
 		mutex.lock();

@@ -129,58 +129,35 @@ image Darknet::ipl_to_image(IplImage *src)
 
 void Darknet::detect(cv::Mat *mat)
 {
-	// std::cout << "detecting cv::Mat\n";
 	float nms = .4;
 	auto l = this->net->layers[this->net->n-1];
 
-	// std::cout << "convert image.. " << std::endl;
 	if(!ipl)
-	{
-		std::cout << "create ipl\n";
 		ipl = cvCreateImage(cvSize(mat->cols,mat->rows), IPL_DEPTH_8U, mat->channels());
-	}
+
 	if(m.empty())
-	{
-		std::cout << "create mat\n";
 		m.create(mat->cols, mat->rows, CV_8UC3);
-	}
+
 	mat->copyTo(m);
 	*ipl = m;
 	auto im = ipl_to_image(ipl);
 	buff[buff_index] = im;
-	// buff[buff_index] = copy_image(im);
-	// std::cout << "done" << std::endl;
-
-	// std::cout << "letterbox image.. " << std::endl;
-	// auto boxed = letterbox_image(buff[buff_index],net->w,net->h);
+	
 	auto boxed = letterbox_image(im, net->w, net->h);
 	auto X = boxed.data;
-	// std::cout << "done" << std::endl;
-
-	// std::cout << "predict.. " << std::endl;
+	
 	auto prediction = network_predict(this->net, X);
-	// std::cout << "done" << std::endl;
-
-	// std::cout << "memcopy.. " << std::endl;
+	
 	memcpy(this->predictions[this->demo_index], prediction, l.outputs*sizeof(float));
 	mean_arrays(this->predictions, this->demo_frame, l.outputs, this->avg);
 	l.output = avg;
-	// std::cout << "done" << std::endl;
 
 	if(l.type == DETECTION)
-	{
-		// std::cout << "last layer type : Detection\n";
 		get_detection_boxes(l, 1, 1, this->demo_thresh, this->probs, boxes, 0);
-	}
 	else if(l.type == REGION)
-	{
-		// std::cout << "last layer type : Region\n";
 		get_region_boxes(l, im.w, im.h, net->w, net->h, this->demo_thresh, this->probs, this->boxes, 0, 0, 0, demo_hier, 1);
-	}
 	else 
-	{
 		error("Last layer must produce detections\n");
-	}
 
 	do_nms_obj(this->boxes, this->probs, l.w*l.h*l.n, l.classes, nms);
 
