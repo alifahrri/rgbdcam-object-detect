@@ -13,14 +13,16 @@ int main(int argc, char **argv)
 	cv::namedWindow("depth", CV_WINDOW_NORMAL);
 	Darknet darknet;
 	cv::Mat color, depth;
+	// cv::Mat img;
+	// cv::Mat detections;
 
 	std::thread darknet_thread([&]
 	{
 		while(running)
 		{
 			mutex.lock();
-			// auto img = color.clone();
-			auto img = color;
+			auto img = color.clone();
+			// auto img = color;
 			mutex.unlock();
 
 			if(!img.empty())
@@ -36,13 +38,8 @@ int main(int argc, char **argv)
 		mutex.lock();
 		rgbdcam.readMat(color, depth);
 		mutex.unlock();
-		// ipl = color;
-		// if(darknet.ipl)
-		// 	cvShowImage("ipl", darknet.ipl);
-		// if(darknet.ipl_display)
-		// 	cvShowImage("result", darknet.ipl_display);
 		auto detections = color.clone();
-		darknet.drawDetections(&detections);
+		darknet.drawDetections(detections);
 		cv::imshow("color", detections);
 		cv::imshow("depth", depth);
 		// darknet.detect(&color);

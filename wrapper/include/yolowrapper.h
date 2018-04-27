@@ -39,7 +39,7 @@ public :
 	Darknet();
 	void detect(IplImage *ipl);
 	void detect(cv::Mat *mat);
-	void drawDetections(cv::Mat *mat);
+	void drawDetections(cv::Mat &mat);
 	void run();
 	BBoxes getResult();
 
@@ -50,7 +50,6 @@ private :
 
 public :
 	cv::Mat m;
-	// IplImage res_ipl;
 	IplImage *ipl = 0;
 	IplImage *ipl_display = 0;
 
@@ -59,7 +58,6 @@ private :
 	image **demo_alphabet;
 	image buff_letter[3];
 	image buff[3];
-	// image display;
 	network *net;
 	box *boxes;
 	box *boxes_result;
