@@ -36,7 +36,8 @@ int main(int argc, char **argv)
 		rgbdcam.readMat(color, depth);
 		mutex.unlock();
 		auto detections = color.clone();
-		darknet.drawDetections(detections);
+		auto result = darknet.getResult();
+		darknet.drawDetections(detections, result);
 		cv::imshow("color", detections);
 		cv::imshow("depth", depth);
 		// darknet.detect(&color);

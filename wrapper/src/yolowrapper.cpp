@@ -196,6 +196,7 @@ std::vector<Darknet::BBox> Darknet::getResult()
 					strcat(labelstr, demo_names[j]);
 				}
 				bbox.label = std::string(labelstr);
+				bbox.confidence = probs_result[i][j];
 			}
 		}
 
@@ -224,13 +225,14 @@ std::vector<Darknet::BBox> Darknet::getResult()
 	return boxes;
 }
 
-void Darknet::drawDetections(cv::Mat &mat)
+void Darknet::drawDetections(cv::Mat &mat, const BBoxes &bboxes)
 {
-	auto bboxes = this->getResult();
+	// auto bboxes = this->getResult();
 	for(const auto& b : bboxes)
 	{
 		auto color = cv::Scalar(b.rgb[2]*255, b.rgb[1]*255, b.rgb[0]*255);
 		cv::rectangle(mat,cv::Rect(b.x,b.y,b.w,b.h),color,2);
-		cv::putText(mat,b.label,cv::Point(b.x,b.y),CV_FONT_HERSHEY_PLAIN, 2.0, color, 2);
+		auto text = b.label + " : " + std::to_string(b.confidence);
+		cv::putText(mat,text,cv::Point(b.x,b.y),CV_FONT_HERSHEY_PLAIN, 2.0, color, 2);
 	}
 }

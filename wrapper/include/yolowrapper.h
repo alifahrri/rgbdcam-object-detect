@@ -32,6 +32,7 @@ public :
 		int w;
 		int h;
 		std::string label;
+		float confidence;
 		float rgb[3];
 	};
 	typedef std::vector<BBox> BBoxes;
@@ -39,7 +40,7 @@ public :
 	Darknet();
 	void detect(IplImage *ipl);
 	void detect(cv::Mat *mat);
-	void drawDetections(cv::Mat &mat);
+	void drawDetections(cv::Mat &mat, const BBoxes &bboxes);
 	void run();
 	BBoxes getResult();
 
