@@ -25,11 +25,23 @@
 class Darknet
 {
 public :
+	struct BBox 
+	{
+		int x;
+		int y;
+		int w;
+		int h;
+		std::string label;
+		float rgb[3];
+	};
+	typedef std::vector<BBox> BBoxes;
+public :
 	Darknet();
 	void detect(IplImage *ipl);
 	void detect(cv::Mat *mat);
 	void drawDetections(cv::Mat *mat);
 	void run();
+	BBoxes getResult();
 
 private :
 	void ipl_into_image(IplImage *src, image im);
@@ -38,6 +50,7 @@ private :
 
 public :
 	cv::Mat m;
+	// IplImage res_ipl;
 	IplImage *ipl = 0;
 	IplImage *ipl_display = 0;
 

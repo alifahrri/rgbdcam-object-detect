@@ -222,42 +222,105 @@ void Darknet::detect(cv::Mat *mat)
 	// free_image(display);
 }
 
+std::vector<Darknet::BBox> Darknet::getResult()
+{
+	std::vector<BBox> boxes;
+
+	for(int i=0; i<demo_detections; i++)
+	{
+		BBox bbox;
+		char labelstr[4096] = {0};
+		int class_ = -1;
+		for(int j=0; j < demo_classes; j++)
+		{
+			if(probs_result[i][j] > demo_thresh)
+			{
+				if(class_ < 0)
+				{
+					strcat(labelstr, demo_names[j]);
+					class_ = j;
+				}
+				else 
+				{
+					strcat(labelstr,",");
+					strcat(labelstr, demo_names[j]);
+				}
+				bbox.label = std::string(labelstr);
+			}
+		}
+
+		if(class_>= 0) 
+		{
+			auto w = buff[buff_index].w;
+			auto h = buff[buff_index].h;
+			int width = buff[buff_index].h * 0.006;
+			int offset = class_*123457%demo_classes;
+			float red = get_color(2, offset, demo_classes);
+			float green = get_color(1, offset, demo_classes);
+			float blue = get_color(0, offset, demo_classes);
+			bbox.rgb[0] = red;
+			bbox.rgb[1] = green;
+			bbox.rgb[2] = blue;
+			box b = this->boxes[i];
+
+			bbox.x = (b.x-b.w/2)*w;
+			bbox.y = (b.y-b.h/2)*h;
+			bbox.w = b.w*w;
+			bbox.h = b.h*h;
+
+			boxes.push_back(bbox);
+		}
+	}
+
+	return boxes;
+}
+
 void Darknet::drawDetections(cv::Mat *mat)
 {
-	// printf("\033[2J");
-    // printf("\033[1;1H");
-    // printf("Objects:\n\n");
 
-	// auto img = cvCreateImage(cvSize(mat->cols,mat->rows), IPL_DEPTH_8U, mat->channels());
-	// IplImage img = (*mat);
-	IplImage im = (*mat);
-	IplImage *img = cvCloneImage(&im);
-	auto display = ipl_to_image(img);
-	// // auto display = buff[buff_index];
-	// auto b = *(this->boxes);
-	// auto p = *(this->probs);
-	mutex.lock();
-	draw_detections(display, demo_detections, this->demo_thresh, this->boxes_result, this->probs_result, 0, demo_names, this->demo_alphabet, this->demo_classes);
-	mutex.unlock();
+	auto bboxes = this->getResult();
+	for(const auto& b : bboxes)
+	{
+		auto color = cv::Scalar(b.rgb[2], b.rgb[1], b.rgb[0]);
+		cv::rectangle(*mat,cv::Rect(b.x,b.y,b.w,b.h),color);
+		cv::putText(*mat,b.label,cv::Point(b.x,b.y),CV_FONT_HERSHEY_PLAIN,1.0, color);
+	}
+	// // printf("\033[2J");
+    // // printf("\033[1;1H");
+    // // printf("Objects:\n\n");
 
-	// auto step = img->widthStep;
+	// // auto img = cvCreateImage(cvSize(mat->cols,mat->rows), IPL_DEPTH_8U, mat->channels());
+	// // IplImage img = (*mat);
+	// // if(!res_ipl)
+	// // 	res_ipl = cvCreateImage(cvSize(mat->cols, mat->rows), IPL_DEPTH_8U, mat->channels());
+	// static IplImage res_ipl = (IplImage)(*mat);
+	// IplImage *img = cvCloneImage(&res_ipl);
+	// auto display = ipl_to_image(img);
+	// // // auto display = buff[buff_index];
+	// // auto b = *(this->boxes);
+	// // auto p = *(this->probs);
+	// mutex.lock();
+	// draw_detections(display, demo_detections, this->demo_thresh, this->boxes_result, this->probs_result, 0, demo_names, this->demo_alphabet, this->demo_classes);
+	// mutex.unlock();
+
+	// // auto step = img->widthStep;
+	// // for(auto y = 0; y<display.h; ++y)
+	// // 	for(auto x = 0; x<display.w; ++x)
+	// // 		for(auto k = 0; k<display.c; ++k)
+	// // 		{
+	// // 			img->imageData[y*step + x*display.c + k] = (unsigned char)(get_pixel(display, x, y, k)*255);
+	// // 		}
+	
+	// // auto step = ipl_display->widthStep;
+	// // /*
+	// auto step = mat->step;
 	// for(auto y = 0; y<display.h; ++y)
 	// 	for(auto x = 0; x<display.w; ++x)
 	// 		for(auto k = 0; k<display.c; ++k)
 	// 		{
-	// 			img->imageData[y*step + x*display.c + k] = (unsigned char)(get_pixel(display, x, y, k)*255);
+	// 			mat->data[y*step + x*display.c + k] = (unsigned char)(get_pixel(display, x, y, k)*255);
 	// 		}
-	
-	// auto step = ipl_display->widthStep;
-	// /*
-	auto step = mat->step;
-	for(auto y = 0; y<display.h; ++y)
-		for(auto x = 0; x<display.w; ++x)
-			for(auto k = 0; k<display.c; ++k)
-			{
-				mat->data[y*step + x*display.c + k] = (unsigned char)(get_pixel(display, x, y, k)*255);
-			}
-	// */
-	cvReleaseImage(&img);
-	free_image(display);
+	// // */
+	// cvReleaseImage(&img);
+	// free_image(display);
 }
