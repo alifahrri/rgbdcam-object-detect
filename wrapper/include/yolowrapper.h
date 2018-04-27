@@ -12,6 +12,7 @@
 #include "box.h"
 // }
 
+#include <mutex>
 #include <opencv2/opencv.hpp>
 #include "opencv2/highgui/highgui_c.h"
 #include "opencv2/imgproc/imgproc_c.h"
@@ -27,6 +28,7 @@ public :
 	Darknet();
 	void detect(IplImage *ipl);
 	void detect(cv::Mat *mat);
+	void drawDetections(cv::Mat *mat);
 	void run();
 
 private :
@@ -40,17 +42,21 @@ public :
 	IplImage *ipl_display = 0;
 
 private :
+	std::mutex mutex;
 	image **demo_alphabet;
 	image buff_letter[3];
 	image buff[3];
+	// image display;
 	network *net;
 	box *boxes;
+	box *boxes_result;
 	double demo_time;
 	float demo_thresh = 0;
 	float demo_hier = .5;
 	float fps = 0;
 	float **predictions;
 	float **probs;
+	float **probs_result;
 	float *avg;
 	char **demo_names;
 	int demo_detections = 0;

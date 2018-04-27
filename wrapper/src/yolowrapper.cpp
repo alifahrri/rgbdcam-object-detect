@@ -88,10 +88,15 @@ Darknet::Darknet()
 	for(int j = 0; j < demo_frame; ++j) 
 		this->predictions[j] = (float *) calloc(l.outputs, sizeof(float));
 	this->boxes = (box *)calloc(l.w*l.h*l.n, sizeof(box));
+	this->boxes_result = (box *) calloc(l.w*l.h*l.n, sizeof(box));
 
     this->probs = (float **)calloc(l.w*l.h*l.n, sizeof(float *));
+	this->probs_result = (float **) calloc(l.w*l.h*l.n, sizeof(float*));
     for(int j = 0; j < l.w*l.h*l.n; ++j) 
+	{
 		this->probs[j] = (float *)calloc(l.classes+1, sizeof(float));
+		this->probs_result[j] = (float *)calloc(l.classes+1, sizeof(float));
+	}
 }
 
 void Darknet::ipl_into_image(IplImage *src, image im)
@@ -174,37 +179,85 @@ void Darknet::detect(cv::Mat *mat)
 	else if(l.type == REGION)
 	{
 		std::cout << "last layer type : Region\n";
-		get_region_boxes(l, buff[0].w, buff[0].h, net->w, net->h, this->demo_thresh, this->probs, boxes, 0, 0, 0, demo_hier, 1);
+		get_region_boxes(l, buff[0].w, buff[0].h, net->w, net->h, this->demo_thresh, this->probs, this->boxes, 0, 0, 0, demo_hier, 1);
 	}
 	else 
 	{
 		error("Last layer must produce detections\n");
 	}
 
-	do_nms_obj(boxes, this->probs, l.w*l.h*l.n, l.classes, nms);
-	std::cout << "drawing.. ";
-	printf("\033[2J");
-    printf("\033[1;1H");
-    // printf("\nFPS:%.1f\n",fps);
-    printf("Objects:\n\n");
-	auto display = buff[buff_index];
-	draw_detections(display, demo_detections, this->demo_thresh, boxes, this->probs, 0, demo_names, this->demo_alphabet, this->demo_classes);
-	std::cout << "done" << std::endl;
+	do_nms_obj(this->boxes, this->probs, l.w*l.h*l.n, l.classes, nms);
 
-	if(!ipl_display)
-		ipl_display = cvCreateImage(cvSize(mat->cols,mat->rows), IPL_DEPTH_8U, mat->channels());
-	// if(display.c == 3)
-	// 	rgbgr_image(display);
+	mutex.lock();
+	// *(this->boxes_result) = *(this->boxes);
+	for(int i=0; i<l.w*l.h*l.n; i++)
+		this->boxes_result[i] = this->boxes[i];
+	for(int i=0; i < demo_detections; i++)
+		for(int j=0; j<demo_classes; j++)
+			this->probs_result[i][j] = this->probs[i][j];
+	mutex.unlock();
 
-	auto step = ipl_display->widthStep;
+	// std::cout << "drawing.. ";
+	// printf("\033[2J");
+    // printf("\033[1;1H");
+    // printf("Objects:\n\n");
+	// // auto display = buff[buff_index];
+	// display = buff[buff_index];
+	// draw_detections(display, demo_detections, this->demo_thresh, this->boxes, this->probs, 0, demo_names, this->demo_alphabet, this->demo_classes);
+	// std::cout << "done" << std::endl;
+
+	// if(!ipl_display)
+	// 	ipl_display = cvCreateImage(cvSize(mat->cols,mat->rows), IPL_DEPTH_8U, mat->channels());
+
+	// auto step = ipl_display->widthStep;
+	// for(auto y = 0; y<display.h; ++y)
+	// 	for(auto x = 0; x<display.w; ++x)
+	// 		for(auto k = 0; k<display.c; ++k)
+	// 		{
+	// 			ipl_display->imageData[y*step + x*display.c + k] = (unsigned char)(get_pixel(display, x, y, k)*255);
+	// 		}
+
+	free_image(boxed);
+	free_image(im);
+	// free_image(display);
+}
+
+void Darknet::drawDetections(cv::Mat *mat)
+{
+	// printf("\033[2J");
+    // printf("\033[1;1H");
+    // printf("Objects:\n\n");
+
+	// auto img = cvCreateImage(cvSize(mat->cols,mat->rows), IPL_DEPTH_8U, mat->channels());
+	// IplImage img = (*mat);
+	IplImage im = (*mat);
+	IplImage *img = cvCloneImage(&im);
+	auto display = ipl_to_image(img);
+	// // auto display = buff[buff_index];
+	// auto b = *(this->boxes);
+	// auto p = *(this->probs);
+	mutex.lock();
+	draw_detections(display, demo_detections, this->demo_thresh, this->boxes_result, this->probs_result, 0, demo_names, this->demo_alphabet, this->demo_classes);
+	mutex.unlock();
+
+	// auto step = img->widthStep;
+	// for(auto y = 0; y<display.h; ++y)
+	// 	for(auto x = 0; x<display.w; ++x)
+	// 		for(auto k = 0; k<display.c; ++k)
+	// 		{
+	// 			img->imageData[y*step + x*display.c + k] = (unsigned char)(get_pixel(display, x, y, k)*255);
+	// 		}
+	
+	// auto step = ipl_display->widthStep;
+	// /*
+	auto step = mat->step;
 	for(auto y = 0; y<display.h; ++y)
 		for(auto x = 0; x<display.w; ++x)
 			for(auto k = 0; k<display.c; ++k)
 			{
-				ipl_display->imageData[y*step + x*display.c + k] = (unsigned char)(get_pixel(display, x, y, k)*255);
+				mat->data[y*step + x*display.c + k] = (unsigned char)(get_pixel(display, x, y, k)*255);
 			}
-
-	free_image(boxed);
-	free_image(im);
+	// */
+	cvReleaseImage(&img);
 	free_image(display);
 }

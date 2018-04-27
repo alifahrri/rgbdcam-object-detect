@@ -11,7 +11,7 @@ int main(int argc, char **argv)
 	std::mutex mutex;
 	cv::namedWindow("color", CV_WINDOW_NORMAL);
 	cv::namedWindow("depth", CV_WINDOW_NORMAL);
-	auto darknet = Darknet();
+	Darknet darknet;
 	cv::Mat color, depth;
 
 	std::thread darknet_thread([&]
@@ -39,9 +39,11 @@ int main(int argc, char **argv)
 		// ipl = color;
 		// if(darknet.ipl)
 		// 	cvShowImage("ipl", darknet.ipl);
-		if(darknet.ipl_display)
-			cvShowImage("result", darknet.ipl_display);
-		cv::imshow("color", color);
+		// if(darknet.ipl_display)
+		// 	cvShowImage("result", darknet.ipl_display);
+		auto detections = color.clone();
+		darknet.drawDetections(&detections);
+		cv::imshow("color", detections);
 		cv::imshow("depth", depth);
 		// darknet.detect(&color);
 		auto c = cv::waitKey(33);
