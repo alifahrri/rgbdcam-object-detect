@@ -53,7 +53,7 @@
 #define DEFAULT_FPS 						30
 #define DEFAULT_WIDTH 					0
 #define DEFAULT_HEIGHT 					0
-#define DEFAULT_THRESH 				 0.3
+#define DEFAULT_THRESH 				 0.5
 #define DEFAULT_HIER 					  0.5
 #define DEFAULT_CLASS 					20
 

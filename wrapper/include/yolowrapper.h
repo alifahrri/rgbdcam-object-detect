@@ -40,26 +40,26 @@ public :
 	IplImage *ipl_display = 0;
 
 private :
-	char **demo_names;
 	image **demo_alphabet;
-	int demo_classes;
-	float **probs;
-	box *boxes;
-	network *net;
-	image buff[3];
 	image buff_letter[3];
-	int buff_index = 0;
-	float fps = 0;
+	image buff[3];
+	network *net;
+	box *boxes;
+	double demo_time;
 	float demo_thresh = 0;
 	float demo_hier = .5;
-	int running  = 0;
-	int demo_frame = 3;	
-	int demo_detections = 0;
+	float fps = 0;
 	float **predictions;
+	float **probs;
+	float *avg;
+	char **demo_names;
+	int demo_detections = 0;
+	int demo_frame = 3;
 	int demo_index = 0;
 	int demo_done = 0;
-	float *avg;
-	double demo_time;
+	int buff_index = 0;
+	int running  = 0;
+	int demo_classes;
 };
 
 #endif
