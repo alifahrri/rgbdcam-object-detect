@@ -45,9 +45,11 @@ int main(int argc, char **argv)
 		auto res_end = result.end();
 		for(const auto &d : res_depth)
 		{
+			if(res_it != res_end)
+				(*res_it).label += ((" (" )+std::to_string((int)d)+(") "));
 			ss << ((res_it != res_end) ? ((*res_it++).label + " : ") : "") <<  d << "; ";
 		}
-		std::cout << "result depth : " << ss.str() << std::endl;
+		std::cout << "[result : depth] " << ss.str() << std::endl;
 		darknet.drawDetections(detections, result);
 		cv::imshow("color", detections);
 		cv::imshow("depth", depth);
