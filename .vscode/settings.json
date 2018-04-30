@@ -2,6 +2,10 @@
 	"files.associations": {
 		"region_layer.h": "c",
 		"maxpool_layer.c": "cpp",
-		"mutex": "cpp"
+		"mutex": "cpp",
+		"array": "cpp",
+		"slist": "cpp",
+		"initializer_list": "cpp",
+		"utility": "cpp"
 	}
 }

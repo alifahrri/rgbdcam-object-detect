@@ -34,3 +34,4 @@ build/CMakeFiles/object-detect.dir/src/rgbdcam.cpp.o
 build/*
 build*/*
 darknet/*
+*.oni

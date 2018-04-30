@@ -3,6 +3,7 @@
 #include <thread>
 #include <chrono>
 #include <mutex>
+#include <ctime>
 
 std::vector<float> readDistance(cv::Mat &m, const Darknet::BBoxes &boxes);
 
@@ -10,7 +11,27 @@ int main(int argc, char **argv)
 {
 	RGBDCam *rgbdcam;
 	if(argc > 1)
-		rgbdcam = new RGBDCam(argv[1]);
+	{
+		if(std::string(argv[1]) == std::string("record"))
+		{
+			auto t = std::time(nullptr);
+			auto date = std::string(::ctime(&t));
+			for(auto &d : date)
+				d = ((d == ' ' || d == '\0' || d == '\n') ? '-' : ((d==':') ? '.' : d));
+			auto filename = std::string(::getenv("PWD")) + '/' + date + "record.oni";
+			if(argc > 2)
+				filename = argv[2];
+			std::cout << "recording to : " << filename << std::endl;
+			rgbdcam = new RGBDCam(filename, true);
+		}
+		else if(access(argv[1],F_OK) != -1)
+			rgbdcam = new RGBDCam(argv[1]);
+		else
+		{
+			std::cerr << ("file does not exist! exiting\n");
+			return -1;
+		}
+	}
 	else
 		rgbdcam = new RGBDCam();
 	rgbdcam->init();
@@ -84,6 +105,7 @@ int main(int argc, char **argv)
 			running = false;
 	}
 	darknet_thread.join();
+	rgbdcam->cleanUp();
 	cv::destroyAllWindows();
 	return 0;
 }
