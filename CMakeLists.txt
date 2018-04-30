@@ -10,9 +10,14 @@ message("Darknet Dir : " ${DARKNET_DIR})
 
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/)
 
+set(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTOUIC ON)
+set(CMAKE_INCLUDE_CURRENT_DIR ON)
+
 find_package(Threads)
 find_package(OpenNI2 REQUIRED)
 find_package(OpenCV REQUIRED)
+find_package(Qt5Network REQUIRED)
 
 add_definitions(-DOPENCV)
 # add_subdirectory(${DARKNET_DIR})
@@ -68,7 +73,8 @@ include_directories(${DARKNET_DIR}/include)
 include_directories(${DARKNET_DIR}/examples)
 include_directories(${DARKNET_DIR}/gui)
 include_directories(wrapper/include)
-include_directories(include ${OPENNI2_INCLUDE_DIRS} ${OpenCV_INCLUDE_DIRS})
+include_directories(include ${OPENNI2_INCLUDE_DIRS} ${OpenCV_INCLUDE_DIRS}   ${QT_INCLUDE_DIRS}
+)
 
 set(YOLO_SRC_DIR ${DARKNET_DIR}/src)
 set(YOLO_EXAMPLES_DIR ${DARKNET_DIR}/examples)
@@ -234,4 +240,4 @@ target_link_libraries(darknet_cpp_wraplib )
 file(GLOB SRCFILES src/*.cpp)
 add_executable(object-detect ${SRCFILES})
 
-target_link_libraries(object-detect darknet_cpp_wraplib ${OpenCV_LIBS} ${OPENNI2_LIBRARY})
+target_link_libraries(object-detect darknet_cpp_wraplib ${OpenCV_LIBS} ${OPENNI2_LIBRARY} Qt5::Network)

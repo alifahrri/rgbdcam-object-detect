@@ -1,5 +1,6 @@
 #include "rgbdcam.h"
 #include "yolowrapper.h"
+#include "detectionserver.h"
 #include <thread>
 #include <chrono>
 #include <mutex>
@@ -40,6 +41,7 @@ int main(int argc, char **argv)
 	// cv::namedWindow("color", CV_WINDOW_NORMAL);
 	cv::namedWindow("depth", CV_WINDOW_NORMAL);
 	Darknet darknet;
+	DetectionServer detection_server;
 	cv::Mat color, depth;
 
 	std::thread darknet_thread([&]
@@ -85,13 +87,15 @@ int main(int argc, char **argv)
 		for(const auto &d : res_depth)
 		{
 			if(res_it != res_end)
-				(*res_it).label += ((" (" )+std::to_string((int)d)+(") "));
-			ss << ((res_it != res_end) ? ((*res_it++).label + " : ") : "") <<  d << "; ";
+			{
+				ss << res_it->label << "(raw : " << std::to_string(d) << ") (prob : " << std::to_string(res_it->confidence) << ") ";
+				res_it ++;
+			}
 			if(wpts_it != wpts_end)
 			{
-				ss << " (" << std::to_string(wpts_it->x) << ", " 
+				ss << " pos(" << std::to_string(wpts_it->x) << ", " 
 					<< std::to_string(wpts_it->y) << ", " 
-					<< std::to_string(wpts_it->z) << ";";
+					<< std::to_string(wpts_it->z) << ");";
 				wpts_it++;
 			}
 		}
@@ -100,6 +104,11 @@ int main(int argc, char **argv)
 		cv::imshow("detections", detections);
 		cv::imshow("depth", depth);
 		// darknet.detect(&color);
+
+		ss << "\n";
+		std::string msg("detected : ");
+		msg += ss.str();
+		detection_server.publish(msg);
 		auto c = cv::waitKey(33);
 		if(c == 27)
 			running = false;
