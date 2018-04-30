@@ -3,17 +3,12 @@
 
 RGBDCam::RGBDCam()
 {
-	if(openni::OpenNI::initialize() != openni::STATUS_OK)
-	{
-		std::cerr << "OpenNI failed to initialized : "
-						<< openni::OpenNI::getExtendedError() 
-						<< std::endl;
-		openni::OpenNI::shutdown();
-		exit(-1);
-	}
-	this->open_device();
-	this->init_stream();
-	this->start_stream();
+	
+}
+
+RGBDCam::RGBDCam(const std::string &file)
+{
+	oni_file = file;
 }
 
 RGBDCam::~RGBDCam()
@@ -24,12 +19,58 @@ RGBDCam::~RGBDCam()
 	openni::OpenNI::shutdown();
 }
 
+void RGBDCam::init()
+{
+	this->init_openni();
+	if(oni_file.size())
+		this->open_file(oni_file);
+	else
+		this->open_device();
+	this->init_stream();
+	this->start_stream();
+}
+
+void RGBDCam::init_openni()
+{
+	if(openni::OpenNI::initialize() != openni::STATUS_OK)
+	{
+		std::cerr << "OpenNI failed to initialized : "
+						<< openni::OpenNI::getExtendedError() 
+						<< std::endl;
+		openni::OpenNI::shutdown();
+		exit(-1);
+	}
+}
+
+RGBDCam::Point3D RGBDCam::convertCoordinate(const cv::Point2i &pt)
+{
+	float x;
+	float y;
+	float z;
+	openni::CoordinateConverter::convertDepthToWorld(depth_stream,pt.x, pt.y, depth_mat.at<openni::DepthPixel>(pt), &x, &y, &z);
+	return {x, y, z};
+}
+
+RGBDCam::Point3Ds RGBDCam::convertCoordinate(const std::vector<cv::Point2i> &pts)
+{
+	Point3Ds w_pts;
+	for(const auto &p : pts)
+		w_pts.push_back(convertCoordinate(p));
+	return w_pts;
+}
+
 void RGBDCam::readMat(cv::Mat &color, cv::Mat &depth)
 {
 	color_stream.readFrame(&color_frame);
 	depth_stream.readFrame(&depth_frame);
-	color= cv::Mat(cv::Size(640,480),CV_8UC3,(void*)color_frame.getData());
-	depth = cv::Mat(cv::Size(640,480), CV_16UC1, (void*)depth_frame.getData());
+
+	static const auto size = cv::Size(640,480);
+
+	color_mat = cv::Mat(size,CV_8UC3,(void*)color_frame.getData());
+	depth_mat = cv::Mat(size, CV_16UC1, (void*)depth_frame.getData());
+
+	color = color_mat;
+	depth = depth_mat;
 	depth.convertTo(depth,CV_8U,255./depth_stream.getMaxPixelValue());
 	cv::cvtColor(color, color, CV_RGB2BGR);
 }
@@ -38,6 +79,18 @@ void RGBDCam::start_stream()
 {
 	color_stream.start();
 	depth_stream.start();
+}
+
+void RGBDCam::open_file(const std::string& path)
+{
+	auto status = device.open(path.c_str());
+	if(status != openni::STATUS_OK)
+	{
+		std::cerr << "Device open failed : "
+						<< openni::OpenNI::getExtendedError() 
+						<< std::endl;
+		openni::OpenNI::shutdown();
+	}
 }
 
 void RGBDCam::open_device()
