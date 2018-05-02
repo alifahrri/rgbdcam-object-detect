@@ -40,7 +40,10 @@
                 "${workspaceFolder}/darknet/src",
                 "${workspaceFolder}/wrapper/include",
                 "/usr/include/x86_64-linux-gnu/qt5/QtNetwork",
-                "/usr/include/x86_64-linux-gnu/qt5"
+                "/usr/include/x86_64-linux-gnu/qt5",
+                "${workspaceFolder}/example/client",
+                "/usr/include/x86_64-linux-gnu/qt5/QtWidgets",
+                "/usr/include/x86_64-linux-gnu/qt5/QtCore"
             ],
             "defines": [],
             "intelliSenseMode": "clang-x64",

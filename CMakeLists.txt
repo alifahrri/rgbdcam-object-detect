@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8)
-project(recorder)
+project(rgbd-object-detect)
 
 set(CMAKE_BUILD_TYPE Debug)
 set(CMAKE_CXX_FLAGS "-std=c++11 -Ofast -pthread")
@@ -73,7 +73,7 @@ include_directories(${DARKNET_DIR}/include)
 include_directories(${DARKNET_DIR}/examples)
 include_directories(${DARKNET_DIR}/gui)
 include_directories(wrapper/include)
-include_directories(include ${OPENNI2_INCLUDE_DIRS} ${OpenCV_INCLUDE_DIRS}   ${QT_INCLUDE_DIRS}
+include_directories(include ${OPENNI2_INCLUDE_DIRS} ${OpenCV_INCLUDE_DIRS} ${QT_INCLUDE_DIRS}
 )
 
 set(YOLO_SRC_DIR ${DARKNET_DIR}/src)

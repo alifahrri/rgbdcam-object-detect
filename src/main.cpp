@@ -39,7 +39,7 @@ int main(int argc, char **argv)
 	bool running = true;
 	std::mutex mutex;
 	// cv::namedWindow("color", CV_WINDOW_NORMAL);
-	cv::namedWindow("depth", CV_WINDOW_NORMAL);
+	// cv::namedWindow("depth", CV_WINDOW_NORMAL);
 	Darknet darknet;
 	DetectionServer detection_server;
 	cv::Mat color, depth;
