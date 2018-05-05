@@ -5,6 +5,7 @@
 #include <chrono>
 #include <mutex>
 #include <ctime>
+#include "utility.hpp"
 
 std::vector<float> readDistance(cv::Mat &m, const Darknet::BBoxes &boxes);
 
@@ -48,20 +49,26 @@ int main(int argc, char **argv)
 	{
 		while(running)
 		{
+			utility::timer timer;
 			mutex.lock();
 			auto img = color.clone();
 			// auto img = color;
 			mutex.unlock();
 
 			if(!img.empty())
+			{
 				darknet.detect(&img);
-			else
-				std::this_thread::sleep_for(std::chrono::milliseconds(33));
+				std::cout << "[darknet thread] detecting time : " << timer.elapsed() << std::endl;
+			}
+			// else
+				// std::this_thread::sleep_for(std::chrono::milliseconds(33));
+			timer.sleep(33.3);
 		}
 	});
 
 	while(running)
 	{
+		utility::timer timer;
 		mutex.lock();
 		rgbdcam->readMat(color, depth);
 		mutex.unlock();
@@ -109,13 +116,15 @@ int main(int argc, char **argv)
 		std::string msg("detected : ");
 		msg += ss.str();
 		detection_server.publish(msg);
-		auto c = cv::waitKey(33);
+		auto c = cv::waitKey(1);
+		std::cout << "[rgbd loop] elapsed : " << timer.elapsed() << std::endl;
 		if(c == 27)
 			running = false;
+		timer.sleep(33.3);
 	}
 	darknet_thread.join();
 	rgbdcam->cleanUp();
-	cv::destroyAllWindows();
+	// cv::destroyAllWindows();
 	return 0;
 }
 
