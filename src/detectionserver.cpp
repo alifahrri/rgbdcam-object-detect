@@ -1,7 +1,7 @@
 #include "detectionserver.h"
 #include <iostream>
 
-#define PORT_DETECTION 3244
+#define PORT_DETECTION 52746
 
 DetectionServer::DetectionServer()
 {
