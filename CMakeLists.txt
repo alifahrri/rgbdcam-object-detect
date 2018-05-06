@@ -53,6 +53,10 @@ find_package(Boost REQUIRED python)
 find_package(PythonLibs REQUIRED)
 find_package(OpenCV REQUIRED)
 
+add_subdirectory(example)
+
+add_subdirectory(protocol)
+
 add_subdirectory(darknet)
 include_directories(darknet/include)
 include_directories(darknet/src)
@@ -75,5 +79,3 @@ file(GLOB SRCFILES src/*.cpp)
 add_executable(object-detect ${SRCFILES})
 
 target_link_libraries(object-detect darknet_cpp_wraplib ${OpenCV_LIBS} ${OPENNI2_LIBRARY} Qt5::Network)
-
-add_subdirectory(example)

@@ -1,0 +1,16 @@
+package object_detection;
+
+message Detections {
+
+    message Object {
+        required string class    = 1;
+        required float x_pixel   = 2;
+        required float y_pixel   = 3;
+        required float z_pixel   = 4;
+        required float x_mm      = 5;
+        required float y_mm      = 6;
+        required float z_mm      = 7;
+    }
+
+    repeated Object objects = 1;
+}
