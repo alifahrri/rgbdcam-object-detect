@@ -5,6 +5,7 @@
 #include <chrono>
 #include <mutex>
 #include <ctime>
+#include <utility>
 #include "utility.hpp"
 
 std::vector<float> readDistance(cv::Mat &m, const Darknet::BBoxes &boxes);
@@ -72,6 +73,7 @@ int main(int argc, char **argv)
 		mutex.lock();
 		rgbdcam->readMat(color, depth);
 		mutex.unlock();
+		// std::system("clear");
 		auto detections = color.clone();
 
 		auto result = darknet.getResult();
@@ -90,32 +92,35 @@ int main(int argc, char **argv)
 
 		auto res_depth = readDistance(depth, result);
 
+		detection_server.publish(result, wpts, res_depth);
 		std::stringstream ss;
-		for(const auto &d : res_depth)
-		{
-			if(res_it != res_end)
-			{
-				ss << res_it->label << "(raw : " << std::to_string(d) << ") (prob : " << std::to_string(res_it->confidence) << ") ";
-				res_it ++;
-			}
-			if(wpts_it != wpts_end)
-			{
-				ss << " pos(" << std::to_string(wpts_it->x) << ", " 
-					<< std::to_string(wpts_it->y) << ", " 
-					<< std::to_string(wpts_it->z) << ");";
-				wpts_it++;
-			}
-		}
-		std::cout << "[result : depth] " << ss.str() << std::endl;
+		// for(const auto &d : res_depth)
+		// {
+		// 	if(res_it != res_end)
+		// 	{
+		// 		ss << res_it->label << "(raw : " << std::to_string(d) << ") (prob : " << std::to_string(res_it->confidence) << ") ";
+		// 		res_it ++;
+		// 	}
+		// 	if(wpts_it != wpts_end)
+		// 	{
+		// 		ss << " pos(" << std::to_string(wpts_it->x) << ", " 
+		// 			<< std::to_string(wpts_it->y) << ", " 
+		// 			<< std::to_string(wpts_it->z) << ");";
+		// 		wpts_it++;
+		// 	}
+		// }
+		// std::cout << "[result : depth] " << ss.str() << std::endl;
 		darknet.drawDetections(detections, result);
 		cv::imshow("detections", detections);
 		cv::imshow("depth", depth);
 		// darknet.detect(&color);
 
-		ss << "\n";
+		// ss << "\n";
+		ss << std::to_string(result.size());
 		std::string msg("detected : ");
 		msg += ss.str();
-		detection_server.publish(msg);
+		std::cout << msg << std::endl;
+		// detection_server.publish(msg);
 		auto c = cv::waitKey(1);
 		std::cout << "[rgbd loop] elapsed : " << timer.elapsed() << std::endl;
 		if(c == 27)
