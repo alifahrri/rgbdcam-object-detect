@@ -116,8 +116,8 @@ void RGBDCam::start_stream()
 	depth_stream.start();
 	if(record_mode)
 	{
-		recorder.attach(color_stream);
-		recorder.attach(depth_stream);
+		recorder.attach(color_stream, true);
+		recorder.attach(depth_stream, true);
 		recorder.start();
 	}
 }
