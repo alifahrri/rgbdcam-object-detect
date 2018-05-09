@@ -53,14 +53,19 @@ find_package(Boost REQUIRED python)
 find_package(PythonLibs REQUIRED)
 find_package(OpenCV REQUIRED)
 
-add_subdirectory(example)
-
 add_subdirectory(protocol)
+set(PROTO_SRC_DIR ${PROJECT_SOURCE_DIR}/protocol)
+set(PROTO_HEADER_DIR ${PROJECT_SOURCE_DIR}/protocol)
+set(PROTO_PY_DIR ${PROJECT_SOURCE_DIR}/protocol)
+set(MSG_PROTOCOL_LIB protolib)
+
+add_subdirectory(example)
 
 add_subdirectory(darknet)
 include_directories(darknet/include)
 include_directories(darknet/src)
 
+include_directories(${PROTO_HEADER_DIR})
 include_directories(SYSTEM ${Boost_INCLUDE_DIR})
 include_directories(SYSTEM ${PYTHON_INCLUDE_DIR})
 include_directories(SYSTEM ${OpenCV_INCLUDE_DIRS})
@@ -78,4 +83,4 @@ target_link_libraries(darknet_cpp_wraplib darknetlib)
 file(GLOB SRCFILES src/*.cpp)
 add_executable(object-detect ${SRCFILES})
 
-target_link_libraries(object-detect darknet_cpp_wraplib ${OpenCV_LIBS} ${OPENNI2_LIBRARY} Qt5::Network)
+target_link_libraries(object-detect ${MSG_PROTOCOL_LIB} darknet_cpp_wraplib ${OpenCV_LIBS} ${OPENNI2_LIBRARY} Qt5::Network)
