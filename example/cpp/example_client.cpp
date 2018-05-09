@@ -1,7 +1,7 @@
 #include <QtCore>
 #include "client.h"
 
-#define PORT_DETECTION 3244
+#define PORT_DETECTION 52746
 
 int main(int argc, char **argv)
 {
