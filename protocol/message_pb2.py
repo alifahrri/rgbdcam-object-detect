@@ -18,7 +18,7 @@ _sym_db = _symbol_database.Default()
 DESCRIPTOR = _descriptor.FileDescriptor(
   name='message.proto',
   package='object_detection',
-  serialized_pb=_b('\n\rmessage.proto\x12\x10object_detection\"\xb8\x01\n\nDetections\x12\x34\n\x07objects\x18\x01 \x03(\x0b\x32#.object_detection.Detections.Object\x1at\n\x06Object\x12\r\n\x05\x63lass\x18\x01 \x02(\t\x12\x0f\n\x07x_pixel\x18\x02 \x02(\x02\x12\x0f\n\x07y_pixel\x18\x03 \x02(\x02\x12\x0f\n\x07z_pixel\x18\x04 \x02(\x02\x12\x0c\n\x04x_mm\x18\x05 \x02(\x02\x12\x0c\n\x04y_mm\x18\x06 \x02(\x02\x12\x0c\n\x04z_mm\x18\x07 \x02(\x02')
+  serialized_pb=_b('\n\rmessage.proto\x12\x10object_detection\"\xcd\x01\n\nDetections\x12\x34\n\x07objects\x18\x01 \x03(\x0b\x32#.object_detection.Detections.Object\x1a\x88\x01\n\x06Object\x12\r\n\x05\x63lass\x18\x01 \x02(\t\x12\x0f\n\x07x_pixel\x18\x02 \x02(\x02\x12\x0f\n\x07y_pixel\x18\x03 \x02(\x02\x12\x0f\n\x07z_pixel\x18\x04 \x02(\x02\x12\x0c\n\x04x_mm\x18\x05 \x02(\x02\x12\x0c\n\x04y_mm\x18\x06 \x02(\x02\x12\x0c\n\x04z_mm\x18\x07 \x02(\x02\x12\x12\n\nconfidence\x18\x08 \x02(\x02')
 )
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
 
@@ -81,6 +81,13 @@ _DETECTIONS_OBJECT = _descriptor.Descriptor(
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
+    _descriptor.FieldDescriptor(
+      name='confidence', full_name='object_detection.Detections.Object.confidence', index=7,
+      number=8, type=2, cpp_type=6, label=2,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
   ],
   extensions=[
   ],
@@ -92,8 +99,8 @@ _DETECTIONS_OBJECT = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=104,
-  serialized_end=220,
+  serialized_start=105,
+  serialized_end=241,
 )
 
 _DETECTIONS = _descriptor.Descriptor(
@@ -122,7 +129,7 @@ _DETECTIONS = _descriptor.Descriptor(
   oneofs=[
   ],
   serialized_start=36,
-  serialized_end=220,
+  serialized_end=241,
 )
 
 _DETECTIONS_OBJECT.containing_type = _DETECTIONS

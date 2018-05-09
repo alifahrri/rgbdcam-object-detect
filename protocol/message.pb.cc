@@ -52,7 +52,7 @@ void protobuf_AssignDesc_message_2eproto() {
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(Detections));
   Detections_Object_descriptor_ = Detections_descriptor_->nested_type(0);
-  static const int Detections_Object_offsets_[7] = {
+  static const int Detections_Object_offsets_[8] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Detections_Object, class__),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Detections_Object, x_pixel_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Detections_Object, y_pixel_),
@@ -60,6 +60,7 @@ void protobuf_AssignDesc_message_2eproto() {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Detections_Object, x_mm_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Detections_Object, y_mm_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Detections_Object, z_mm_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Detections_Object, confidence_),
   };
   Detections_Object_reflection_ =
     new ::google::protobuf::internal::GeneratedMessageReflection(
@@ -106,12 +107,13 @@ void protobuf_AddDesc_message_2eproto() {
   GOOGLE_PROTOBUF_VERIFY_VERSION;
 
   ::google::protobuf::DescriptorPool::InternalAddGeneratedFile(
-    "\n\rmessage.proto\022\020object_detection\"\270\001\n\nDe"
+    "\n\rmessage.proto\022\020object_detection\"\315\001\n\nDe"
     "tections\0224\n\007objects\030\001 \003(\0132#.object_detec"
-    "tion.Detections.Object\032t\n\006Object\022\r\n\005clas"
-    "s\030\001 \002(\t\022\017\n\007x_pixel\030\002 \002(\002\022\017\n\007y_pixel\030\003 \002("
-    "\002\022\017\n\007z_pixel\030\004 \002(\002\022\014\n\004x_mm\030\005 \002(\002\022\014\n\004y_mm"
-    "\030\006 \002(\002\022\014\n\004z_mm\030\007 \002(\002", 220);
+    "tion.Detections.Object\032\210\001\n\006Object\022\r\n\005cla"
+    "ss\030\001 \002(\t\022\017\n\007x_pixel\030\002 \002(\002\022\017\n\007y_pixel\030\003 \002"
+    "(\002\022\017\n\007z_pixel\030\004 \002(\002\022\014\n\004x_mm\030\005 \002(\002\022\014\n\004y_m"
+    "m\030\006 \002(\002\022\014\n\004z_mm\030\007 \002(\002\022\022\n\nconfidence\030\010 \002("
+    "\002", 241);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "message.proto", &protobuf_RegisterTypes);
   Detections::default_instance_ = new Detections();
@@ -138,6 +140,7 @@ const int Detections_Object::kZPixelFieldNumber;
 const int Detections_Object::kXMmFieldNumber;
 const int Detections_Object::kYMmFieldNumber;
 const int Detections_Object::kZMmFieldNumber;
+const int Detections_Object::kConfidenceFieldNumber;
 #endif  // !_MSC_VER
 
 Detections_Object::Detections_Object()
@@ -166,6 +169,7 @@ void Detections_Object::SharedCtor() {
   x_mm_ = 0;
   y_mm_ = 0;
   z_mm_ = 0;
+  confidence_ = 0;
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
 }
 
@@ -214,8 +218,8 @@ void Detections_Object::Clear() {
     ::memset(&first, 0, n);                                \
   } while (0)
 
-  if (_has_bits_[0 / 32] & 127) {
-    ZR_(x_pixel_, z_mm_);
+  if (_has_bits_[0 / 32] & 255) {
+    ZR_(x_pixel_, confidence_);
     if (has_class_()) {
       if (class__ != &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
         class__->clear();
@@ -342,6 +346,21 @@ bool Detections_Object::MergePartialFromCodedStream(
         } else {
           goto handle_unusual;
         }
+        if (input->ExpectTag(69)) goto parse_confidence;
+        break;
+      }
+
+      // required float confidence = 8;
+      case 8: {
+        if (tag == 69) {
+         parse_confidence:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   float, ::google::protobuf::internal::WireFormatLite::TYPE_FLOAT>(
+                 input, &confidence_)));
+          set_has_confidence();
+        } else {
+          goto handle_unusual;
+        }
         if (input->ExpectAtEnd()) goto success;
         break;
       }
@@ -411,6 +430,11 @@ void Detections_Object::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormatLite::WriteFloat(7, this->z_mm(), output);
   }
 
+  // required float confidence = 8;
+  if (has_confidence()) {
+    ::google::protobuf::internal::WireFormatLite::WriteFloat(8, this->confidence(), output);
+  }
+
   if (!unknown_fields().empty()) {
     ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
         unknown_fields(), output);
@@ -462,6 +486,11 @@ void Detections_Object::SerializeWithCachedSizes(
     target = ::google::protobuf::internal::WireFormatLite::WriteFloatToArray(7, this->z_mm(), target);
   }
 
+  // required float confidence = 8;
+  if (has_confidence()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteFloatToArray(8, this->confidence(), target);
+  }
+
   if (!unknown_fields().empty()) {
     target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
         unknown_fields(), target);
@@ -508,6 +537,11 @@ int Detections_Object::ByteSize() const {
 
     // required float z_mm = 7;
     if (has_z_mm()) {
+      total_size += 1 + 4;
+    }
+
+    // required float confidence = 8;
+    if (has_confidence()) {
       total_size += 1 + 4;
     }
 
@@ -559,6 +593,9 @@ void Detections_Object::MergeFrom(const Detections_Object& from) {
     if (from.has_z_mm()) {
       set_z_mm(from.z_mm());
     }
+    if (from.has_confidence()) {
+      set_confidence(from.confidence());
+    }
   }
   mutable_unknown_fields()->MergeFrom(from.unknown_fields());
 }
@@ -576,7 +613,7 @@ void Detections_Object::CopyFrom(const Detections_Object& from) {
 }
 
 bool Detections_Object::IsInitialized() const {
-  if ((_has_bits_[0] & 0x0000007f) != 0x0000007f) return false;
+  if ((_has_bits_[0] & 0x000000ff) != 0x000000ff) return false;
 
   return true;
 }
@@ -590,6 +627,7 @@ void Detections_Object::Swap(Detections_Object* other) {
     std::swap(x_mm_, other->x_mm_);
     std::swap(y_mm_, other->y_mm_);
     std::swap(z_mm_, other->z_mm_);
+    std::swap(confidence_, other->confidence_);
     std::swap(_has_bits_[0], other->_has_bits_[0]);
     _unknown_fields_.Swap(&other->_unknown_fields_);
     std::swap(_cached_size_, other->_cached_size_);

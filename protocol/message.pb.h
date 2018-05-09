@@ -145,6 +145,13 @@ class Detections_Object : public ::google::protobuf::Message {
   inline float z_mm() const;
   inline void set_z_mm(float value);
 
+  // required float confidence = 8;
+  inline bool has_confidence() const;
+  inline void clear_confidence();
+  static const int kConfidenceFieldNumber = 8;
+  inline float confidence() const;
+  inline void set_confidence(float value);
+
   // @@protoc_insertion_point(class_scope:object_detection.Detections.Object)
  private:
   inline void set_has_class_();
@@ -161,6 +168,8 @@ class Detections_Object : public ::google::protobuf::Message {
   inline void clear_has_y_mm();
   inline void set_has_z_mm();
   inline void clear_has_z_mm();
+  inline void set_has_confidence();
+  inline void clear_has_confidence();
 
   ::google::protobuf::UnknownFieldSet _unknown_fields_;
 
@@ -173,6 +182,7 @@ class Detections_Object : public ::google::protobuf::Message {
   float x_mm_;
   float y_mm_;
   float z_mm_;
+  float confidence_;
   friend void  protobuf_AddDesc_message_2eproto();
   friend void protobuf_AssignDesc_message_2eproto();
   friend void protobuf_ShutdownFile_message_2eproto();
@@ -489,6 +499,30 @@ inline void Detections_Object::set_z_mm(float value) {
   set_has_z_mm();
   z_mm_ = value;
   // @@protoc_insertion_point(field_set:object_detection.Detections.Object.z_mm)
+}
+
+// required float confidence = 8;
+inline bool Detections_Object::has_confidence() const {
+  return (_has_bits_[0] & 0x00000080u) != 0;
+}
+inline void Detections_Object::set_has_confidence() {
+  _has_bits_[0] |= 0x00000080u;
+}
+inline void Detections_Object::clear_has_confidence() {
+  _has_bits_[0] &= ~0x00000080u;
+}
+inline void Detections_Object::clear_confidence() {
+  confidence_ = 0;
+  clear_has_confidence();
+}
+inline float Detections_Object::confidence() const {
+  // @@protoc_insertion_point(field_get:object_detection.Detections.Object.confidence)
+  return confidence_;
+}
+inline void Detections_Object::set_confidence(float value) {
+  set_has_confidence();
+  confidence_ = value;
+  // @@protoc_insertion_point(field_set:object_detection.Detections.Object.confidence)
 }
 
 // -------------------------------------------------------------------
